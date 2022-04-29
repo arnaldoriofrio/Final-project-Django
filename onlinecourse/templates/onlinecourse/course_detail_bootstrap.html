@@ -62,14 +62,15 @@
                 </div>
 
             -->
+            <button data-toggle="collapse" data-target="#exam">Collapsible</button>
             <div id="exam" class="collapse">
                 {% for question in course.question_set.all %}
                     <div class="card mt-1">
-                        <div class="card-body">{{question.question_text}}</div>
+                        <div class="card-header">{{question.question_text}}</div>
                         {% for choice in course.choice_set.all %}
-                            <div class="card mt-1">
-                                <div class="card-body">{{choice.choice_text}}</div>
-                            </div>
+                            <!--<div class="card mt-1"> -->
+                                <div class="card mt-1">{{choice.choice_text}}</div>
+                            <!--<div</div> -->
                         {% endfor %}
                     </div>
                 {% endfor %}
