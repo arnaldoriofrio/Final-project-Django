@@ -102,9 +102,9 @@ class Enrollment(models.Model):
     # Has question content
     # Other fields and methods you would like to design
 class Question(models.Model):
-    lesson = models.ForeignKey(Course, on_delete=models.CASCADE)
-    question_text = models.TextField()
-    grade = models.IntegerField(default=0)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    question_text = models.CharField(max_length=200, default="question")
+    grade = models.FloatField(default=0)
     
     # Foreign key to lesson
     # question text
@@ -127,8 +127,8 @@ class Question(models.Model):
     # Indicate if this choice of the question is a correct one or not
     # Other fields and methods you would like to design
 class Choice(models.Model):
-    choice_text = models.TextField()
-    is_correct = models.IntegerField(default=0)
+    choice_text = models.CharField(max_length=200, default='choice')
+    is_correct = models.BooleanField(default=False)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 # <HINT> The submission model
 # One enrollment could have multiple submission

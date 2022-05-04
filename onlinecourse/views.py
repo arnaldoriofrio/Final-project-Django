@@ -110,12 +110,16 @@ def enroll(request, course_id):
          # Collect the selected choices from exam form
          # Add each selected choice object to the submission object
          # Redirect to show_exam_result with the submission id
+
 def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
-    Enrollment.objects.get(user=user, course=course)
-    enrollment=Enrollment
-    Submission.objects.create(enrollment=enrollment)
+    enrollment = course = get_object_or_404(Enrollment, user=user, course=course)
+    submission = Submission.objects.create(enrollment=enrollment)
+    submitted_answers = extract_answers(request)
+    submission.choices.add(*submitted_answers)
+    submission.save()
+    return HttpResponseRedirect(reverse('onlinecourse:show_exam_result', args=(course.id, submission.id,)))
 
 # <HINT> A example method to collect the selected choices from the exam form from the request object
 def extract_answers(request):
@@ -134,7 +138,24 @@ def extract_answers(request):
         # Get the selected choice ids from the submission record
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
-#def show_exam_result(request, course_id, submission_id):
+def show_exam_result(request, course_id, submission_id):
+    course = get_object_or_404(Course, pk=course_id)
+    submission = get_object_or_404(Submission, pk=submission_id)
 
+    # Get the selected choice ids from the submission record
+    submitted_choices = submission.choices.all()
+    questions = course.question_set.all()
 
+    # For each selected choice, check if it is a correct answer or not
+    total = sum([q.grade for q in questions])
+    achieved = 0
+    for question in questions:
+        if question.is_get_score(submitted_choices):
+            achieved += question.grade
+    grade = round(achieved/total*100)
 
+    context = {}
+    context['course'] = course
+    context['submitted_choices'] = submitted_choices
+    context['grade'] = grade
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
