@@ -10,7 +10,6 @@ except Exception:
 from django.conf import settings
 import uuid
 
-
 # Instructor model
 class Instructor(models.Model):
     user = models.ForeignKey(
@@ -22,7 +21,6 @@ class Instructor(models.Model):
 
     def __str__(self):
         return self.user.username
-
 
 # Learner model
 class Learner(models.Model):
@@ -52,7 +50,6 @@ class Learner(models.Model):
         return self.user.username + "," + \
                self.occupation
 
-
 # Course model
 class Course(models.Model):
     name = models.CharField(null=False, max_length=30, default='online course')
@@ -68,14 +65,12 @@ class Course(models.Model):
         return "Name: " + self.name + "," + \
                "Description: " + self.description
 
-
 # Lesson model
 class Lesson(models.Model):
     title = models.CharField(max_length=200, default="title")
     order = models.IntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     content = models.TextField()
-
 
 # Enrollment model
 class Enrollment(models.Model):
@@ -93,13 +88,12 @@ class Enrollment(models.Model):
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
 
-
 # Question Model
 class Question(models.Model):
     # Foreign key to lesson
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    text = models.CharField(max_length=200, default="question")
+    text = models.CharField(max_length=200, default="Question")
     grade = models.FloatField(default=0)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def is_get_score(self, selected):
         all_answers = set(self.choice_set.all())
@@ -109,13 +103,11 @@ class Question(models.Model):
         else:
             return False
 
-
 # Choice Model
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    text = models.CharField(max_length=200, default='choice')
+    text = models.CharField(max_length=200, default='Choice')
     is_correct = models.BooleanField(default=False)
-
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
 # Submission Model
 class Submission(models.Model):
